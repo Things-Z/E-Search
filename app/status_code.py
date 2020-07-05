@@ -27,9 +27,11 @@ class StatusCode:
     NO_EXISTSED = 1000 # The data doesn't exist
     EXISTSED = 1001 # The data already exists
 
+    __ALL_CODE = None
     @classmethod
     def codeMsg(cls, code:int)->str:
-        return cls.allCode()[code]
+        msg = cls.ALL_CODE.get(code) if cls.__ALL_CODE else cls.allCode().get(code)
+        return msg if msg else 'Not Code.'
 
     @classmethod
     def allCode(cls)->dict:
@@ -37,6 +39,7 @@ class StatusCode:
         for name, value in vars(cls).items():
             if type(value) is int:
                 data.update({value:name})
+        cls.__ALL_CODE = data
         return data
 
 
@@ -54,21 +57,29 @@ class RespData:
         self.__code = code
         self.__data = data if data else {}
 
-    def code(self, code:int=None)->int:
-        if code:
-            self.__code = code
+    @property
+    def code(self)->int:
         return self.__code
 
+    @code.setter
+    def code(self, code:int):
+        self.__code = code
+
+    @property
     def msg(self)->int:
         return StatusCode.codeMsg(self.__code)
 
-    def data(self, data:dict=None):
-        if data:
-            self.__data.update(data)
+    @property
+    def data(self):
         return self.__data
+    
+    @data.setter
+    def data(self, data:dict):
+        self.__data = data
 
+    @property
     def dump(self):
-        return {'code':self.code(), 'msg':self.msg(), 'data':self.data()}
+        return {'code':self.code, 'msg':self.msg, 'data':self.data}
 
 
 if __name__ == "__main__":

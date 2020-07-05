@@ -21,7 +21,6 @@ def register_blueprint(app:Sanic)->None:
     """ register blueprint """
     from .api import api
     app.blueprint(api)
-    print(api.routes)
 
 def create_app()->Sanic:
     """ create app """
